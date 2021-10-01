@@ -19,23 +19,39 @@ const AddProduct: React.FC<Props> = ({ navigation }) => {
 
         return setErrorMsg('Peripheral products can have any price larger than $0 (zero)')
         }
+      
         let getData = await AsyncStorage.getItem('data')
+    
         console.log(getData)
         if (getData) {
             let dd = JSON.parse(getData)
-             
-            dd.data.push({
-                id: Math.random().toString(36).substring(7),
-                name: name,
-                price: price,
-                type: type
-            })
-            AsyncStorage.setItem('data', JSON.stringify(dd));
-            ToastAndroid.showWithGravity(
-                "Product added Successfully 👍",
-                ToastAndroid.SHORT,
-                ToastAndroid.CENTER
-            );
+            
+            let exist = dd.data.find(x=> x.name == name )
+            if(!exist){
+               dd.data.push({
+                            id: Math.random().toString(36).substring(7),
+                            name: name,
+                            price: price,
+                            type: type
+                        })
+                        AsyncStorage.setItem('data', JSON.stringify(dd));
+                        ToastAndroid.showWithGravity(
+                            "Product added Successfully 👍",
+                            ToastAndroid.LONG,
+                            ToastAndroid.CENTER
+                        );
+            }
+            else {
+                ToastAndroid.showWithGravity(
+                    "Same product name already exist",
+                    ToastAndroid.SHORT,
+                    ToastAndroid.CENTER
+                );
+
+            }
+          
+           // AsyncStorage.setItem('data', JSON.stringify(dd));
+          
             setErrorMsg('')
             clearState()
         }
@@ -44,7 +60,7 @@ const AddProduct: React.FC<Props> = ({ navigation }) => {
             let data = {
                 data: [{
                     id: Math.random().toString(36).substring(7),
-                    name: name,
+                    name: name === name ? null : name,
                     price: price,
                     type: type
                 }]
@@ -57,7 +73,6 @@ const AddProduct: React.FC<Props> = ({ navigation }) => {
 
     }
 
-    console.log(errorMsg, "errororororo")
 
     const productsData: () => Promise<void> = async () => {
         let getData = await AsyncStorage.getItem('data')
