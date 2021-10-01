@@ -119,15 +119,7 @@ const AddProduct: React.FC<Props> = ({ navigation }) => {
             </View>
 
             <View style={styles.btnsContainer}>
-                {/* {name == '' && price == '' && type == '' ?
-                 <Button style={styles.saveBtn} >
-                 <Text style={styles.saveBtnText}>Not SAVE</Text>
-                 <AntDesign name="download" size={18} color="#fff" style={{ marginRight: 10 }} />
-             </Button> :  <Button style={styles.saveBtn} onPress={saveProduct}>
-                    <Text style={styles.saveBtnText}>SAVE</Text>
-                    <AntDesign name="download" size={18} color="#fff" style={{ marginRight: 10 }} />
-                </Button> } */}
-
+             
                 <Button style={name == '' && price =='' && type ==''?styles.disableSave : styles.saveBtn  } onPress={name == '' && price =='' && type ==''? null: saveProduct}>
                     <Text style={styles.saveBtnText}>SAVE</Text>
                     <AntDesign name="download" size={18} color="#fff" style={{ marginRight: 10 }} />
