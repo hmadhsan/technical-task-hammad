@@ -8,38 +8,48 @@ interface Props {
     navigation: any;
 }
 const AddProduct: React.FC<Props> = ({ navigation }) => {
-    const { product, updateProdData, clearState } = UseProductContext(); 
+    const { product, updateProdData, clearState } = UseProductContext();
     const { name, price, type } = product;
-   
+
     const [errorMsg, setErrorMsg] = useState<string>('');
     const saveProduct: () => Promise<void> = async () => {
-        if(type == 'integrated' && (price <= '1000' || price >='2600' ) ){
-           return setErrorMsg('Integrated products maybe anywhere within the range of 1000 and 2600 dollars.')
-        }if(type  == 'peripheral' && price < '0'){
+        if (type == 'integrated' && (price <= '1000' || price >= '2600')) {
+            return setErrorMsg('Integrated products maybe anywhere within the range of 1000 and 2600 dollars.')
+        } if (type == 'peripheral' && price < '0') {
 
-        return setErrorMsg('Peripheral products can have any price larger than $0 (zero)')
+            return setErrorMsg('Peripheral products can have any price larger than $0 (zero)')
         }
-      
+
         let getData = await AsyncStorage.getItem('data')
 
         if (getData) {
             let dd = JSON.parse(getData)
+            let exist = dd.data.find(x => x.name == name)
+            if (!exist) {
+                dd.data.push({
+                    id: Math.random().toString(36).substring(7),
+                    name: name,
+                    price: price,
+                    type: type
+                })
+                AsyncStorage.setItem('data', JSON.stringify(dd));
+                ToastAndroid.showWithGravity(
+                    "Product added Successfully 👍",
+                    ToastAndroid.SHORT,
+                    ToastAndroid.CENTER
+                );
+                setErrorMsg('')
+                clearState()
+            } else if (exist) {
+                ToastAndroid.showWithGravity(
+                    "Same product name aleady exists.",
+                    ToastAndroid.SHORT,
+                    ToastAndroid.CENTER
+                );
+                setErrorMsg('')
+                clearState()
+            }
 
-        
-            dd.data.push({
-                id: Math.random().toString(36).substring(7),
-                name:  name,
-                price: price,
-                type: type
-            })
-            AsyncStorage.setItem('data', JSON.stringify(dd));
-            ToastAndroid.showWithGravity(
-                "Product added Successfully 👍",
-                ToastAndroid.SHORT,
-                ToastAndroid.CENTER
-            );
-            setErrorMsg('')
-            clearState()
         }
 
         else {
@@ -55,8 +65,6 @@ const AddProduct: React.FC<Props> = ({ navigation }) => {
             AsyncStorage.setItem('data', JSON.stringify(data));
         }
         clearState()
-
-
     }
 
 
@@ -102,7 +110,7 @@ const AddProduct: React.FC<Props> = ({ navigation }) => {
                 keyboardType="numeric"
             />
 
-         {errorMsg ? <Text style={{color: 'red'}}> {errorMsg} </Text>:null}
+            {errorMsg ? <Text style={{ color: 'red' }}> {errorMsg} </Text> : null}
 
             <View style={styles.picker}>
                 <Picker
@@ -120,13 +128,13 @@ const AddProduct: React.FC<Props> = ({ navigation }) => {
             </View>
 
             <View style={styles.btnsContainer}>
-             
-                <Button style={name == '' && price =='' && type ==''?styles.disableSave : styles.saveBtn  } onPress={name == '' && price =='' && type ==''? null: saveProduct}>
+
+                <Button style={name == '' && price == '' && type == '' ? styles.disableSave : styles.saveBtn} onPress={name == '' && price == '' && type == '' ? null : saveProduct}>
                     <Text style={styles.saveBtnText}>SAVE</Text>
                     <AntDesign name="download" size={18} color="#fff" style={{ marginRight: 10 }} />
                 </Button>
-               
-                <Button  style={styles.cancelBtn} onPress={() => {clearState(); setErrorMsg('')}}>
+
+                <Button style={styles.cancelBtn} onPress={() => { clearState(); setErrorMsg('') }}>
                     <Text style={styles.cancelBtnText}>CANCEL</Text>
                     <MaterialCommunityIcons name="cancel" size={18} color="gray" style={{ marginRight: 10 }} />
                 </Button>
@@ -167,7 +175,7 @@ const styles = StyleSheet.create({
         marginRight: 'auto',
         marginLeft: 'auto',
     },
-    
+
     saveBtn: {
         backgroundColor: 'green',
         width: 150,
