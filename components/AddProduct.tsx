@@ -21,14 +21,14 @@ const AddProduct: React.FC<Props> = ({ navigation }) => {
         }
       
         let getData = await AsyncStorage.getItem('data')
-    
-        console.log(getData)
+
         if (getData) {
             let dd = JSON.parse(getData)
+
         
             dd.data.push({
                 id: Math.random().toString(36).substring(7),
-                name: name === name ? null : name,
+                name:  name,
                 price: price,
                 type: type
             })
@@ -46,7 +46,7 @@ const AddProduct: React.FC<Props> = ({ navigation }) => {
             let data = {
                 data: [{
                     id: Math.random().toString(36).substring(7),
-                    name: name === name ? null : name,
+                    name: name,
                     price: price,
                     type: type
                 }]
@@ -59,7 +59,6 @@ const AddProduct: React.FC<Props> = ({ navigation }) => {
 
     }
 
-    console.log(errorMsg, "errororororo")
 
     const productsData: () => Promise<void> = async () => {
         let getData = await AsyncStorage.getItem('data')
