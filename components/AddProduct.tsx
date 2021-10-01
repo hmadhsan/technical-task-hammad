@@ -42,7 +42,7 @@ const AddProduct: React.FC<Props> = ({ navigation }) => {
                 clearState()
             } else if (exist) {
                 ToastAndroid.showWithGravity(
-                    "Same product name aleady exists.",
+                    "Same product name already exists.",
                     ToastAndroid.SHORT,
                     ToastAndroid.CENTER
                 );
